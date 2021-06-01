@@ -1,0 +1,80 @@
+pipeline {
+    agent any
+    environment {
+        HELM_REPO = credentials('HELM_REPO')
+        HELM_EXPERIMENTAL_OCI=1
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+              echo 'Checkout ...'
+              checkout scm
+            }
+        }
+        stage('Compile & Package') {
+            steps {
+                dir('l08-integration/common/csp-route-service') {
+                    sh 'mvn clean install'
+                }
+            }
+        }
+        stage('Docker Build & Tag') {
+            steps {
+                dir('l08-integration/common/csp-route-service') {
+
+                    sh 'whereis docker'
+                    sh 'echo "current build number: ${BUILD_NUMBER}"'
+                    sh 'docker build -t csp-route-service:1.0.${BUILD_NUMBER} .'
+                    sh 'docker tag csp-route-service:1.0.${BUILD_NUMBER} pswow.azurecr.io/csp-route-service:1.0.${BUILD_NUMBER}'
+                }
+            }
+        }
+        stage('Docker Push to ACR') {
+            steps {
+                dir('l08-integration/common/csp-route-service') {
+                    withCredentials([azureServicePrincipal('6093c76f-5026-4c99-be36-24f0831905f9')]) {
+                        sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+                        sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
+                        sh 'az acr login --name pswow'
+                        sh 'docker push pswow.azurecr.io/csp-route-service:1.0.${BUILD_NUMBER}'
+                        sh 'az acr helm repo add -n pswowdevhelm.azurecr.io'
+                        sh 'printenv'
+                        sh 'helm registry login pswowdevhelm.azurecr.io --username=${HELM_REPO_USR} --password=${HELM_REPO_PSW}'
+                        sh 'helm package helm/csp-route-service  --version 1.0.${BUILD_NUMBER} --app-version 1.0.${BUILD_NUMBER}'
+                        sh 'helm chart save helm/csp-route-service csp-route-service:1.0.${BUILD_NUMBER}'
+                        sh 'helm chart save helm/csp-route-service pswowdevhelm.azurecr.io/csp-route-service:1.0.${BUILD_NUMBER}'
+                        sh 'helm chart push pswowdevhelm.azurecr.io/csp-route-service:1.0.${BUILD_NUMBER} csp-route-service:1.0.${BUILD_NUMBER}'
+                        sh 'az acr helm push -n pswowdevhelm.azurecr.io/csp-route-service-1.0.${BUILD_NUMBER}.tgz csp-route-service-1.0.${BUILD_NUMBER}.tgz'
+                        sh 'az logout'
+                    }
+                }
+            }
+        }
+        stage('Clean up docker local image') {
+            steps {
+                dir('l08-integration/common/csp-route-service') {
+                        sh 'docker rmi pswow.azurecr.io/csp-route-service:1.0.${BUILD_NUMBER}'
+                        sh 'docker rmi csp-route-service:1.0.${BUILD_NUMBER}'
+                }
+            }
+        }
+        stage('Deploy using helm') {
+            steps {
+                dir('l08-integration/common/csp-route-service') {
+                   withCredentials([azureServicePrincipal('6093c76f-5026-4c99-be36-24f0831905f9')]) {
+                        sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
+                        sh 'az account set -s $AZURE_SUBSCRIPTION_ID'
+                        sh 'az aks get-credentials --resource-group woolworths-dev-rg --name pswow-dev'
+
+                        sh 'helm registry login pswowdevhelm.azurecr.io --username=${HELM_REPO_USR} --password=${HELM_REPO_PSW}'
+                        sh 'helm repo add pswowdevhelm https://pswowdevhelm.azurecr.io/helm/v1/repo --username=${HELM_REPO_USR} --password=${HELM_REPO_PSW} --force-update'
+                        sh 'helm chart pull pswowdevhelm.azurecr.io/csp-route-service:1.0.${BUILD_NUMBER}'
+                        sh 'helm upgrade --install csp-route-service --set image.repository=pswow.azurecr.io/csp-route-service,image.tag=1.0.${BUILD_NUMBER} pswowdevhelm/csp-route-service'
+                        sh 'az logout'
+                    }
+                }
+            }
+        }
+
+    }
+}

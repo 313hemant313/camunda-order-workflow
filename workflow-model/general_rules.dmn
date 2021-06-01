@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_general" name="Definitions_general" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
+  <decision id="Decision_general" name="Decision_general">
+    <decisionTable id="DecisionTable_1ko8bi7" hitPolicy="FIRST">
+      <input id="Input_1" label="Item Limit (per order)" camunda:inputVariable="numberOfItems">
+        <inputExpression id="InputExpression_1" typeRef="integer">
+          <text>numberOfItems</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0wdhdcc" label="Order Type" camunda:inputVariable="orderType">
+        <inputExpression id="LiteralExpression_1y7w4zh" typeRef="string">
+          <text>orderType</text>
+        </inputExpression>
+        <inputValues id="UnaryTests_15enxiw">
+          <text>"Ambient","Meat","Produce","International"</text>
+        </inputValues>
+      </input>
+      <output id="Output_1" label="isOrderValid" name="isOrderValidDecision" typeRef="boolean" />
+      <rule id="DecisionRule_0msz4zi">
+        <inputEntry id="UnaryTests_1psp9gc">
+          <text>&gt; 1000</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ydyt63">
+          <text>"Ambient"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ltvukn">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_00d0yhu">
+        <inputEntry id="UnaryTests_0xpuxa6">
+          <text>&gt; 2000</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1to9qhh">
+          <text>"Meat","Produce","International"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_129rgh5">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_11sdben">
+        <inputEntry id="UnaryTests_1wg2umh">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0gquc2e">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1d4w5by">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="Decision_general">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

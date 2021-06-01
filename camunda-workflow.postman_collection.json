@@ -1,0 +1,108 @@
+{
+	"info": {
+		"_postman_id": "eee82d11-91eb-458c-8d92-0f702d7b1e42",
+		"name": "Camunda Workflow",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Group.",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"RoutePlanner\",\r\n    \"name\": \"Route Planner\",\r\n    \"type\": \"PLANNER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/camunda-engine/engine-rest/group/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"camunda-engine",
+						"engine-rest",
+						"group",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send Message",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"messageName\": \"OrderStart\",\r\n    \"businessKey\": \"order_start_1\",\r\n    \"processVariables\": {\r\n        \"orderId\": {\r\n            \"value\": \"ORDER-ID-1\",\r\n            \"type\": \"String\"\r\n        },\r\n        \"orderType\": {\r\n            \"value\": \"Ambient\",\r\n            \"type\": \"String\"\r\n        },\r\n        \"destination\": {\r\n            \"value\": \"LOC: Z\",\r\n            \"type\": \"String\"\r\n        },\r\n        \"emailId\": {\r\n            \"value\": \"hemant.vyas@publicissapient.com\",\r\n            \"type\": \"String\"\r\n        },\r\n        \"numberOfItems\": {\r\n            \"value\": 201,\r\n            \"type\": \"Integer\"\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/camunda-engine/engine-rest/message",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"camunda-engine",
+						"engine-rest",
+						"message"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deploy Model",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "upload",
+							"type": "file",
+							"src": "/D:/Hemant/Projects/PublicisSapient/CamundaPoc/OrderTask/international_rules.dmn"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/engine-rest/deployment/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"engine-rest",
+						"deployment",
+						"create"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

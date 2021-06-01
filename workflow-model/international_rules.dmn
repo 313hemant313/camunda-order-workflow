@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_international" name="Definitions_international" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
+  <decision id="Decision_international" name="International Decision">
+    <decisionTable id="DecisionTable_13vpo11">
+      <input id="Input_1" label="Number of border" biodi:width="192" camunda:inputVariable="noOfBorder">
+        <inputExpression id="InputExpression_1" typeRef="integer">
+          <text>noOfBorder</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Is Order Valid" name="isOrderValidDecision" typeRef="boolean" biodi:width="192" />
+      <rule id="DecisionRule_0g9kalw">
+        <inputEntry id="UnaryTests_02mjtl7">
+          <text>&lt;= 3</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0y5hah5">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0cb4y7m">
+        <inputEntry id="UnaryTests_1mwj07e">
+          <text>&gt; 3</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1t81q2t">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="Decision_international">
+        <dc:Bounds height="80" width="180" x="160" y="100" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

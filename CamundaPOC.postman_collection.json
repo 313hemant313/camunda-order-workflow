@@ -1,0 +1,97 @@
+{
+	"info": {
+		"_postman_id": "22766e43-256f-4e87-bdad-436c8dda49cb",
+		"name": "CamundaPOC",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Send Message",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"messageName\": \"OrderStart\",\r\n    \"businessKey\": \"order_start_14\",\r\n    \"processVariables\": {\r\n        \"orderId\": {\r\n            \"value\": \"ORDER-123\",\r\n            \"type\": \"String\"\r\n        },\r\n        \"orderType\": {\r\n            \"value\": \"International\",\r\n            \"type\": \"String\"\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/engine-rest/message",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"engine-rest",
+						"message"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deploy Model",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "upload",
+							"type": "file",
+							"src": "/D:/Hemant/Projects/PublicisSapient/CamundaPoc/OrderTask/international_rules.dmn"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/engine-rest/deployment/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"engine-rest",
+						"deployment",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Process History",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/engine-rest/history/process-definition/Process_OrderHandler:1:c9597272-bac8-11eb-97da-005056c00001/statistics",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"engine-rest",
+						"history",
+						"process-definition",
+						"Process_OrderHandler:1:c9597272-bac8-11eb-97da-005056c00001",
+						"statistics"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

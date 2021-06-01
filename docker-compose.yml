@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  workflow-engine:
+    build: ./workflow-engine
+#    You can push to your docker hub
+#    image: v313hemant/workflow-engine:latest
+    ports:
+      - "8080:8080"
+
+  external-worker:
+    build: ./external-worker
+#    You can push to your docker hub
+#    image: v313hemant/external-worker:latest
+    environment:
+      CAMUNDA_ENGINE_URL: "http://workflow-engine:8080/api/camunda-engine"

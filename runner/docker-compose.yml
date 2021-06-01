@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  workflow-engine:
+    image: v313hemant/workflow-engine:latest
+    ports:
+      - "8080:8080"
+
+  external-worker:
+    image: v313hemant/external-worker:latest
+    environment:
+      CAMUNDA_ENGINE_URL: "http://workflow-engine:8080/api/camunda-engine"
